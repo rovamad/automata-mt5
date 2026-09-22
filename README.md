@@ -72,11 +72,10 @@ Debajo del panel principal hay un botón **▸ Ajustes Avanzados** que despliega
 | Campo | Corresponde a | Valores |
 |---|---|---|
 | Depósito inicial (USD) | `Deposit` | Depósito inicial de la cuenta simulada |
-| Apalancamiento | `Leverage` | Ej. `1:100` |
+| Apalancamiento | `Leverage` | Ej. `1:100` — siempre inicia en `1:1` al abrir la app |
 | Carpeta de informes | — | Ruta donde se guardan los `.html`; si se deja vacío usa `reports/` junto al ejecutable |
 | Modelado (Modelling) | `Model` en el `.ini` del tester | `0` Cada tick · `1` OHLC 1 minuto (por defecto, igual que antes) · `2` Solo precio de apertura · `3` Cálculos matemáticos · `4` Cada tick con ticks reales |
 | Delay de ejecución (ms) | `ExecutionMode` | `0` normal (por defecto) · `-1` delay aleatorio · `>0` retraso fijo en ms (máx. 600000) |
-| Sin apalancamiento | `Leverage` | Fuerza `1:1` ignorando el campo Apalancamiento de arriba |
 | Modo visual | `Visual` | Abre el tester en modo visual — más lento, pero necesario para que MT5 dibuje el gráfico de balance en el reporte |
 
 Estos valores se guardan en `config.json` (bajo `common_settings`, `reports_path` y `advanced`) cada vez que corres un backtest, así se recuerdan en la próxima sesión.

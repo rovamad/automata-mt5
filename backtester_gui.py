@@ -635,7 +635,7 @@ class BacktestGUI(ctk.CTk):
         self._slbl(frame, "Start Date", 3, 0)
         fr_from = ctk.CTkFrame(frame, fg_color=("#252525", "#1f1f1f"), corner_radius=10, border_width=1, border_color=("#2a2a2a", "#252525"))
         fr_from.grid(row=4, column=0, padx=10, pady=(0,10), sticky="ew")
-        self.date_from = DateEntry(fr_from, width=30, background="#1f1f1f", foreground="white", borderwidth=0, font=("Arial", 11), date_pattern="yyyy.mm.dd", year=2020, month=1, day=1)
+        self.date_from = DateEntry(fr_from, width=30, background="#1f1f1f", foreground="white", borderwidth=0, font=("Arial", 11), date_pattern="yyyy.mm.dd", year=2029, month=1, day=1)
         self.date_from.pack(padx=10, pady=8, fill="x")
         _fix_dateentry_month_year_nav(self.date_from)
 
@@ -701,22 +701,22 @@ class BacktestGUI(ctk.CTk):
         # Deposit
         self._slbl(self.frame_advanced, "Depósito (USD)", 0, 0)
         self.entry_deposit = ctk.CTkEntry(
-            self.frame_advanced, height=40, corner_radius=10,
+            self.frame_advanced, width=105, height=40, corner_radius=10,
             fg_color=("#252525", "#1f1f1f"), border_color=("#2a2a2a", "#252525"),
             text_color=("#ffffff", "#ffffff"), font=ctk.CTkFont(size=13)
         )
         self.entry_deposit.insert(0, str(cs.get("deposit", 100000)))
         self.entry_deposit.grid(row=1, column=0, sticky="ew", **pad)
 
-        # Leverage
+        # Leverage — siempre 1:1 al iniciar la herramienta
         self._slbl(self.frame_advanced, "Apalancamiento", 0, 1)
         self.entry_leverage = ctk.CTkEntry(
-            self.frame_advanced, height=40, corner_radius=10,
+            self.frame_advanced, width=105, height=40, corner_radius=10,
             fg_color=("#252525", "#1f1f1f"), border_color=("#2a2a2a", "#252525"),
             text_color=("#ffffff", "#ffffff"), font=ctk.CTkFont(size=13),
             placeholder_text="Ej: 1:100"
         )
-        self.entry_leverage.insert(0, str(cs.get("leverage", "1:1")))
+        self.entry_leverage.insert(0, "1:1")
         self.entry_leverage.grid(row=1, column=1, sticky="ew", **pad)
 
         # Modelling
@@ -738,7 +738,7 @@ class BacktestGUI(ctk.CTk):
         # Delay
         self._slbl(self.frame_advanced, "Delay (ms)", 0, 3)
         self.entry_delay = ctk.CTkEntry(
-            self.frame_advanced, height=40, corner_radius=10,
+            self.frame_advanced, width=105, height=40, corner_radius=10,
             fg_color=("#252525", "#1f1f1f"), border_color=("#2a2a2a", "#252525"),
             text_color=("#ffffff", "#ffffff"), font=ctk.CTkFont(size=13),
             placeholder_text="0, -1, >0"
@@ -753,14 +753,6 @@ class BacktestGUI(ctk.CTk):
             self.frame_advanced, text="", variable=self.var_visual_mode,
             progress_color="#00d9ff", width=52, height=26
         ).grid(row=1, column=4, sticky="w", padx=(18, 10), pady=(0, 16))
-
-        # No leverage
-        self._slbl(self.frame_advanced, "Sin apalancamiento", 2, 0)
-        self.var_no_leverage = ctk.BooleanVar(value=adv.get("no_leverage", False))
-        ctk.CTkSwitch(
-            self.frame_advanced, text="", variable=self.var_no_leverage,
-            progress_color="#00d9ff", width=52, height=26
-        ).grid(row=3, column=0, sticky="w", padx=(18, 10), pady=(0, 16))
 
     def _toggle_advanced_panel(self):
         self._advanced_visible = not self._advanced_visible
@@ -782,10 +774,9 @@ class BacktestGUI(ctk.CTk):
             deposit = int(self.entry_deposit.get().strip())
         except ValueError:
             deposit = self.conf.get("common_settings", {}).get("deposit", 100000)
-        leverage = self.entry_leverage.get().strip() or "1:100"
+        leverage = self.entry_leverage.get().strip() or "1:1"
         return {
             "model": model_code,
-            "no_leverage": self.var_no_leverage.get(),
             "delay_ms": delay_ms,
             "visual_mode": self.var_visual_mode.get(),
             "deposit": deposit,
@@ -906,7 +897,6 @@ class BacktestGUI(ctk.CTk):
             }
         self.conf.setdefault("advanced", {
             "model": 1,
-            "no_leverage": False,
             "delay_ms": 0,
             "visual_mode": False,
         })
@@ -969,7 +959,6 @@ class BacktestGUI(ctk.CTk):
         settings = self._collect_run_settings()
         self.conf["advanced"] = {
             "model": settings["model"],
-            "no_leverage": settings["no_leverage"],
             "delay_ms": settings["delay_ms"],
             "visual_mode": settings["visual_mode"],
         }
@@ -1008,7 +997,7 @@ class BacktestGUI(ctk.CTk):
                 f"📅 Period: {self.date_from.get_date().strftime('%Y.%m.%d')} - {self.date_to.get_date().strftime('%Y.%m.%d')}"
             )
 
-            leverage = "1:1" if settings["no_leverage"] else settings["leverage"]
+            leverage = settings["leverage"]
             visual_flag = 1 if settings["visual_mode"] else 0
 
             for idx, ea in enumerate(expertos, 1):
