@@ -635,7 +635,7 @@ class BacktestGUI(ctk.CTk):
         self._slbl(frame, "Start Date", 3, 0)
         fr_from = ctk.CTkFrame(frame, fg_color=("#252525", "#1f1f1f"), corner_radius=10, border_width=1, border_color=("#2a2a2a", "#252525"))
         fr_from.grid(row=4, column=0, padx=10, pady=(0,10), sticky="ew")
-        self.date_from = DateEntry(fr_from, width=30, background="#1f1f1f", foreground="white", borderwidth=0, font=("Arial", 11), date_pattern="yyyy.mm.dd", year=2029, month=1, day=1)
+        self.date_from = DateEntry(fr_from, width=30, background="#1f1f1f", foreground="white", borderwidth=0, font=("Arial", 11), date_pattern="yyyy.mm.dd", year=2019, month=1, day=1)
         self.date_from.pack(padx=10, pady=8, fill="x")
         _fix_dateentry_month_year_nav(self.date_from)
 
