@@ -7,7 +7,7 @@ App de escritorio para **correr backtests en lote** sobre Expert Advisors de Met
 ## ✨ Features
 
 - 🔍 **Auto-detección de MT5** — Encuentra automáticamente el ejecutable y la carpeta de datos sin configuración manual
-- ⚙️ **Panel de configuración integrado** — Rutas, Telegram y parámetros por defecto, todo desde la app
+- ⚙️ **Panel de configuración integrado** — Rutas de MT5 y Telegram, todo desde la app
 - 📂 **Selección de carpeta de EAs** — Explorador de carpetas con botón de refresco en tiempo real
 - 📊 **Batch backtesting** — Lanza todos los `.ex5` de una carpeta en secuencia automáticamente
 - 📅 **Rango de fechas configurable** — Date pickers visuales con opción de rango por defecto
@@ -16,6 +16,8 @@ App de escritorio para **correr backtests en lote** sobre Expert Advisors de Met
 - 📨 **Notificaciones Telegram** — Mensaje automático al iniciar y al terminar el backtest con resumen
 - 🟢 **Activity Log** — Log en tiempo real con timestamps de cada operación
 - 🚫 **Banner de configuración** — Aviso claro si MT5 no está configurado antes de correr
+- 🎛️ **Ajustes Avanzados** — Modelado (ticks reales / OHLC / precio de apertura), apalancamiento, delay de ejecución y modo visual, todo configurable sin tocar código
+- ⏹️ **Botón Detener** — Cancela el backtest en curso (termina el EA actual y no continúa con los siguientes)
 - 📦 **Ejecutable standalone** — `.exe` listo para usar, sin instalar Python ni dependencias
 
 ---
@@ -55,18 +57,33 @@ Al abrir por primera vez, la app muestra un banner rojo indicando que MT5 no est
 | Ejecutable de MT5 | Ruta a `terminal64.exe` — se autodetecta en `Program Files` |
 | Carpeta de datos | Carpeta GUID en `AppData\MetaQuotes\Terminal\` — también autodetectada |
 
-Ambos campos muestran `✓` verde cuando la ruta es válida o `✗` rojo si no existe.
+Ambos campos muestran `✓` verde cuando la ruta es válida o `✗` rojo si no existe. Cuando la app detecta rutas candidatas las muestra en un combo junto con un botón **Usar esta** que copia esa ruta al campo de arriba con un solo clic.
 
 ### Pestaña Telegram
 
 Activa el toggle e ingresa tu `Bot Token` y `Chat ID` para recibir notificaciones. Puedes probar la conexión con el botón **Enviar mensaje de prueba**.
 
-### Pestaña Ajustes
-
-- **Depósito y apalancamiento** por defecto para todos los backtests
-- **Carpeta de informes** — ruta donde se guardan los `.html`; si se deja vacío usa `reports/` junto al ejecutable
-
 > La configuración se guarda en `config.json` (excluido de git — nunca contiene datos sensibles en el repositorio).
+
+### Ajustes Avanzados (panel colapsable en la ventana principal)
+
+Debajo del panel principal hay un botón **▸ Ajustes Avanzados** que despliega todos los parámetros del Strategy Tester de MT5 — incluyendo lo que antes vivía en la pestaña "Ajustes" de Configuración — sin alterar el comportamiento por defecto de la app hasta que los tocas. Si el contenido no entra en la ventana, la sección hace scroll.
+
+| Campo | Corresponde a | Valores |
+|---|---|---|
+| Depósito inicial (USD) | `Deposit` | Depósito inicial de la cuenta simulada |
+| Apalancamiento | `Leverage` | Ej. `1:100` |
+| Carpeta de informes | — | Ruta donde se guardan los `.html`; si se deja vacío usa `reports/` junto al ejecutable |
+| Modelado (Modelling) | `Model` en el `.ini` del tester | `0` Cada tick · `1` OHLC 1 minuto (por defecto, igual que antes) · `2` Solo precio de apertura · `3` Cálculos matemáticos · `4` Cada tick con ticks reales |
+| Delay de ejecución (ms) | `ExecutionMode` | `0` normal (por defecto) · `-1` delay aleatorio · `>0` retraso fijo en ms (máx. 600000) |
+| Sin apalancamiento | `Leverage` | Fuerza `1:1` ignorando el campo Apalancamiento de arriba |
+| Modo visual | `Visual` | Abre el tester en modo visual — más lento, pero necesario para que MT5 dibuje el gráfico de balance en el reporte |
+
+Estos valores se guardan en `config.json` (bajo `common_settings`, `reports_path` y `advanced`) cada vez que corres un backtest, así se recuerdan en la próxima sesión.
+
+### ⚠️ Sobre los gráficos en los reportes `.html`
+
+MT5 genera el reporte HTML del tester **sin la imagen del gráfico de balance/equity cuando corre en modo headless** (`Visual=0`, que es el modo usado por defecto para que el backtest masivo sea rápido) — es una limitación conocida del terminal al automatizarlo por línea de comandos, no un bug de esta app. Para que el `.html` incluya el gráfico, activa **Modo visual** en Ajustes Avanzados: MT5 abrirá una ventana de test por cada EA (más lento) pero el reporte final sí incluirá la imagen.
 
 ---
 

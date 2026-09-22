@@ -12,6 +12,12 @@
     "from": "2024.01.01",
     "to": "2024.12.31"
   },
+  "advanced": {
+    "model": 1,
+    "no_leverage": false,
+    "delay_ms": 0,
+    "visual_mode": false
+  },
   "telegram": {
     "enabled": false,
     "bot_token": "",
