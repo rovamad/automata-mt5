@@ -36,7 +36,7 @@ App de escritorio para **correr backtests en lote** sobre Expert Advisors de Met
 
 **No necesitas Python.** Descarga el `.exe` directamente y ejecuta:
 
-👉 [**Descargar MT5_Backtest_Pro.exe** (v1.1)](https://github.com/Sebastianlr11/automata-mt5/releases/download/v1.1/MT5_Backtest_Pro.exe)
+👉 [**Descargar MT5_Backtest_Pro.exe** (v1.2)](https://github.com/rovamad/automata-mt5/releases/download/v1.2/MT5_Backtest_Pro.exe)
 
 1. Descarga el `.exe` del enlace de arriba
 2. Colócalo en cualquier carpeta (ej. `C:\Automata\`)
