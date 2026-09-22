@@ -13,6 +13,23 @@ import requests
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
+
+def _fix_dateentry_month_year_nav(date_entry):
+    """tkcalendar cierra el calendario emergente en cualquier FocusOut de su
+    grilla, pero las flechas de navegación de mes/año son botones que también
+    toman el foco al hacer clic, así que cada clic en ellas dispara ese mismo
+    evento y cierra el popup antes de aplicar el cambio de mes/año."""
+    original = date_entry._on_focus_out_cal
+
+    def _on_focus_out_cal(event):
+        focused = date_entry.focus_get()
+        if focused is not None and str(focused).startswith(str(date_entry._top_cal)):
+            return
+        original(event)
+
+    date_entry._calendar.bind('<FocusOut>', _on_focus_out_cal)
+
+
 # ─────────────────────────────────────────────────────────────────
 #  AUTO-DETECTION
 # ─────────────────────────────────────────────────────────────────
@@ -620,12 +637,14 @@ class BacktestGUI(ctk.CTk):
         fr_from.grid(row=4, column=0, padx=10, pady=(0,10), sticky="ew")
         self.date_from = DateEntry(fr_from, width=30, background="#1f1f1f", foreground="white", borderwidth=0, font=("Arial", 11), date_pattern="yyyy.mm.dd", year=2020, month=1, day=1)
         self.date_from.pack(padx=10, pady=8, fill="x")
+        _fix_dateentry_month_year_nav(self.date_from)
 
         self._slbl(frame, "End Date", 3, 1)
         fr_to = ctk.CTkFrame(frame, fg_color=("#252525", "#1f1f1f"), corner_radius=10, border_width=1, border_color=("#2a2a2a", "#252525"))
         fr_to.grid(row=4, column=1, padx=10, pady=(0,10), sticky="ew")
         self.date_to = DateEntry(fr_to, width=30, background="#1f1f1f", foreground="white", borderwidth=0, font=("Arial", 11), date_pattern="yyyy.mm.dd", year=2025, month=12, day=28)
         self.date_to.pack(padx=10, pady=8, fill="x")
+        _fix_dateentry_month_year_nav(self.date_to)
 
         ctk.CTkButton(
             frame, text="Use Default Range",
