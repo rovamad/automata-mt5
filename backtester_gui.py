@@ -754,6 +754,14 @@ class BacktestGUI(ctk.CTk):
             progress_color="#00d9ff", width=52, height=26
         ).grid(row=1, column=4, sticky="w", padx=(18, 10), pady=(0, 16))
 
+        # No leverage
+        self._slbl(self.frame_advanced, "Sin apalancamiento", 2, 0)
+        self.var_no_leverage = ctk.BooleanVar(value=adv.get("no_leverage", False))
+        ctk.CTkSwitch(
+            self.frame_advanced, text="", variable=self.var_no_leverage,
+            progress_color="#00d9ff", width=52, height=26
+        ).grid(row=3, column=0, sticky="w", padx=(18, 10), pady=(0, 16))
+
     def _toggle_advanced_panel(self):
         self._advanced_visible = not self._advanced_visible
         if self._advanced_visible:
